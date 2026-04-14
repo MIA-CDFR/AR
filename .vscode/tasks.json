@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dance4life: assembleDebug",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":app:assembleDebug"],
+      "options": {
+        "cwd": "${workspaceFolder}/apps/android"
+      },
+      "group": "build"
+    },
+    {
+      "label": "dance4life: installDebug",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":app:installDebug"],
+      "options": {
+        "cwd": "${workspaceFolder}/apps/android"
+      },
+      "dependsOn": "dance4life: assembleDebug"
+    },
+    {
+      "label": "dance4life: launch app",
+      "type": "shell",
+      "command": "adb",
+      "args": ["shell", "am", "start", "-n", "com.dance4life.app/.MainActivity"],
+      "dependsOn": "dance4life: installDebug"
+    },
+    {
+      "label": "dance4life: redeploy",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":app:installDebug"],
+      "options": {
+        "cwd": "${workspaceFolder}/apps/android"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

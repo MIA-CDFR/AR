@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+
+jobs:
+  python-training-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ml/training
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install training package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Smoke import
+        run: python -c "import gymnasium, stable_baselines3, numpy, torch; print('ok')"
+
+  android-structure-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify android files exist
+        run: |
+          test -f apps/android/settings.gradle.kts
+          test -f apps/android/build.gradle.kts
+          test -f apps/android/app/build.gradle.kts
